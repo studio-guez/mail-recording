@@ -1,4 +1,9 @@
-import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
+
+function isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 
 // Handler pour la requête HTTP
 async function handleRequest(req: Request): Promise<Response> {
@@ -7,6 +12,13 @@ async function handleRequest(req: Request): Promise<Response> {
 
         if (!email || typeof email !== "string") {
             return new Response(JSON.stringify({ success: false, message: "Email invalide" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        if (!isValidEmail(email)) {
+            return new Response(JSON.stringify({ success: false, message: "Email non valide" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
